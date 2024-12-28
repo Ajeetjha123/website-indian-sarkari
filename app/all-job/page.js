@@ -1,3 +1,4 @@
+"use client";
 import Archives from "@/components/component-types/archives";
 import Category from "@/components/component-types/category";
 import FreeBook from "@/components/component-types/free-book";
@@ -9,14 +10,26 @@ import AccordionItem from "@/components/home/faq/accordionItem";
 import { allJobFaqs, getData } from "@/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RiCircleFill } from "react-icons/ri";
 
-const AllLatestJob = async ({ params }) => {
+const AllLatestJob = ({ params }) => {
   const categoryID = params.category;
   console.log(categoryID);
-  const jobData = await getData("/job");
-  const linkData = jobData.rows;
+  const [jobData, setJobData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getData(`/job`);
+        console.log(response);
+        setJobData(response);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [categoryID]);
+  const linkData = jobData?.rows;
   // const categoryID = null;
   // if(!categoryID) redirect('/job');
   return (
